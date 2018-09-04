@@ -1,11 +1,12 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+// BASE_URL: 'http://onestopsys.com/demo/adeel-osnu/public/api',
 
 export const environment = {
   production: true,
   API: {
-    BASE_URL: 'http://api-osnu.onestopsys.com/api',
+    BASE_URL: 'http://onestopsys.com/adeel-osnu/public/api',
     ROUTES: {
       APPS: '/applications/',      
       TEMPLATES: '/templates/'

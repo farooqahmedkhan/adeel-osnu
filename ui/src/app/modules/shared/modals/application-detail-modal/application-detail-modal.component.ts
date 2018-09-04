@@ -15,7 +15,7 @@ export class ApplicationDetailModalComponent implements OnInit, OnDestroy {
     os: new FormControl('1', Validators.required),
     one_signal_key: new FormControl('', Validators.required),
     one_signal_rest_api_key: new FormControl('', Validators.required),
-    one_signal_user_auth_key: new FormControl('', Validators.required)
+    one_signal_user_auth_key: new FormControl('')
   });
   
   constructor(public activeModal: NgbModal, private applicationService: ApplicationService) { }

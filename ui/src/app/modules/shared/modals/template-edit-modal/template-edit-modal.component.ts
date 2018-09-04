@@ -16,12 +16,7 @@ export class TemplateEditModalComponent implements OnInit {
     name: new FormControl('', Validators.required),
     os: new FormControl('1', Validators.required),
     message: new FormControl('', Validators.required),
-    additional_fields: new FormArray([
-      // new FormGroup({
-      //   key: new FormControl(''),
-      //   value: new FormControl('')
-      // })      
-    ]),
+    additional_fields: new FormArray([]),
     launch_url: new FormControl('', Validators.required)
   });
 

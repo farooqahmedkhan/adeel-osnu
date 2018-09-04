@@ -1,20 +1,24 @@
 <form [formGroup]="templateFormGroup" (ngSubmit)="submit()">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-4">
-        <div class="col-12">
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-12 owner-apps">
           <fieldset>
-            <legend>Please select owner application</legend>            
-            <ul class="list-group noty-owner">
+            <legend>
+              <small>Please select owner application</small>
+            </legend>
+            <ul class="list-group noty-owner" *ngIf="(ownerAppDataset | async)?.length > 0">
               <li class="list-group-item" *ngFor="let app of ownerAppDataset | async;let i = index;">
                 <input type="radio" formControlName="owner_app" value="{{ app.id }}" (change)="updateReceiverListOnRadioChange(i, app)" /> {{ app.name }}
               </li>
             </ul>
           </fieldset>
         </div>
-        <div class="col-12">
+        <div class="col-12 receiver-apps">
           <fieldset>
-            <legend>Please select receiver application(s)</legend>
+            <legend>
+              <small>Please select receiver application(s)</small>
+            </legend>
             <ul class="list-group noty-receiver">
               <li class="list-group-item" *ngFor="let app of receiverAppDataset | async;let i = index;">
                 <input type="checkbox" [formControl]="templateFormGroup.get('receiver_apps').controls[i]" value="{{ app.id }}" id="{{ i }}" /> {{ app.name }}
@@ -23,12 +27,18 @@
           </fieldset>
         </div>
       </div>
-      <div class="col-8">
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12">        
         <div class="col-12">
           <fieldset>
             <legend>Notification Template</legend>
 
             <div class="col-12">
+              <div class="form-group">
+                <select class="form-control" (change)="loadTemplate()" formControlName="selectedTemplate">
+                  <option value="-1">Please select an existing tempalte to use</option>              
+                  <option *ngFor="let template of existingTemplates | async;let i = index;" value="{{ template.id }}">{{ template.name }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Platform</label>
                 <select class="form-control" formControlName="os">
@@ -42,7 +52,7 @@
               </div>
               <div class="form-group">
                 <label>Message</label>
-                <textarea class="form-control" formControlName="message" rows="3"></textarea>
+                <textarea class="form-control" formControlName="message" rows="1"></textarea>
               </div>
             </div>
             <div class="col-12">
@@ -97,7 +107,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 float-left text-center">
-          <button type="submit" class="btn btn-primary float-right btn-sm" [disabled]="!templateFormGroup.valid">Save</button>
+          <button type="submit" class="btn btn-primary float-right btn-sm" [disabled]="!templateFormGroup.valid">Send Notification</button>
       </div>
     </div>
   </div>
