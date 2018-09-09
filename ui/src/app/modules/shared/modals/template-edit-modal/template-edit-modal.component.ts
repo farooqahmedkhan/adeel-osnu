@@ -20,28 +20,21 @@ export class TemplateEditModalComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-    console.log(this.templateFormGroup);
-    this.templateFormGroup.reset();
-    // this.templateFormGroup.get('additional_fields').setValue([]);
+  ngOnInit() {        
     this.uiService.startLoader();
     this.uiService.updateLoader('Loading template details. Please wait...');
     this.templateService.getTemplate(this._templateId)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);            
-      // this.template.additional_fields.forEach((it, i, src) => src.splice(0));
-      // console.log(this.template.additional_fields);
-      this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());
-      // console.log(this.template);
+      this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());      
 
-      // this.templateFormGroup.setValue({
-      //   os: res.os,
-      //   name: this.template.name,
-      //   message: this.template.message,
-      //   // launch_url: this.template.launch_url,
-      //   additional_fields: this.template.additional_fields,
-      //   big_picture: this.template.big_picture || ""
-      // });      
+      this.templateFormGroup.setValue({
+        os: res.os,
+        name: this.template.name,
+        message: this.template.message,        
+        additional_fields: this.template.additional_fields,
+        big_picture: this.template.big_picture || ""
+      });      
       this.uiService.stopLoader();
     });    
   }

@@ -6,7 +6,7 @@
 export const environment = {
   production: true,
   API: {
-    BASE_URL: 'http://onestopsys.com/adeel-osnu/public/api',
+    BASE_URL: 'http://osnu.onestopsys.com/api/public',
     ROUTES: {
       APPS: '/applications/',      
       TEMPLATES: '/templates/'
