@@ -10,9 +10,28 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>#</th>
+                <th>#</th>                
                 <th>Application Name</th>
-                <th>Platform</th>
+                <th class="text-center">
+                  <div ngbDropdown class="d-inline-block">
+                    <span ngbDropdownToggle ngbTooltip="Click to filter by 'Platform'" placement="top" container="body">Platform <i class="fa fa-carrot-down"></i></span>
+                    <div ngbDropdownMenu aria-labelledby="ddAppPlatform">
+                      <button class="dropdown-item" (click)="filterByKey('os',-1)">All</button>
+                      <button class="dropdown-item" (click)="filterByKey('os',1)">Android</button>
+                      <button class="dropdown-item" (click)="filterByKey('os',0)">IOS</button>
+                    </div>
+                  </div>
+                </th>
+                <th class="text-center">
+                  <div ngbDropdown class="d-inline-block">                    
+                    <span ngbDropdownToggle ngbTooltip="Click to filter by 'State'" placement="top" container="body">State <i class="fa fa-carrot-down" [ngClass]="{ 'text-primary': isFilterByState}"></i></span>
+                    <div ngbDropdownMenu aria-labelledby="ddAppState">
+                      <button class="dropdown-item" (click)="filterByKey('enabled',-1)">All</button>
+                      <button class="dropdown-item" (click)="filterByKey('enabled', 1)">Enabled</button>
+                      <button class="dropdown-item" (click)="filterByKey('enabled', 0)">Disabled</button>
+                    </div>
+                  </div>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -20,11 +39,18 @@
               <tr *ngFor="let application of applications | async;let i = index;">
                 <td>{{ i + 1 }}</td>
                 <td>{{ application.name }}</td>
-                <td>{{ application.platform_name }}</td>
+                <td class="text-center">{{ application.platform_name }}</td>
+                <td class="text-center">
+                  <ui-switch (change)="toggleApplicationState($event, application)" [(ngModel)]="application.enabled" size="small" defaultBgColor="maroon" color="limegreen"></ui-switch>                                        
+                </td>
                 <td>
-                  <a href="javascript:void" (click)="openApplicationEditModal(application)">
-                      <span ngbTooltip="Edit this record" placement="top"><i class="fa fa-pencil"></i></span>
-                  </a>
+                  <div class="d-flex">                      
+                      <div class="d-flex pl-1">
+                        <a href="javascript:void" (click)="openApplicationEditModal(application)">
+                            <span ngbTooltip="Edit this record" placement="top"><i class="fa fa-pencil"></i></span>
+                        </a>
+                      </div>
+                  </div>                  
                 </td>
               </tr>              
             </tbody>

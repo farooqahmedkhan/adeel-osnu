@@ -5,3 +5,14 @@
 .panel-heading {
     padding: 2%;
 }
+
+th span:hover,
+th span i:hover {
+    cursor: pointer;
+    color: var(--blue);
+}
+
+.dropdown-item:hover {
+    font-weight: bold;
+    color: var(--blue);
+}

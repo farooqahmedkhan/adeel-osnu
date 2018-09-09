@@ -18,8 +18,7 @@ class CreateAppsTable extends Migration
 
             $table->string('name')->nullable(false);
             $table->longtext('one_signal_key')->nullable(false);
-            $table->longtext('one_signal_rest_api_key')->nullable(true);
-            $table->longtext('one_signal_user_auth_key')->nullable(true);
+            $table->longtext('one_signal_rest_api_key')->nullable(true);            
             /**
              * Possible Values
              *   - ios => 0

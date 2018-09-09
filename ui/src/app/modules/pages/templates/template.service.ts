@@ -11,8 +11,8 @@ export class TemplateService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getTemplates(): Observable<Template[]> {
-    return this.httpClient.get<Template[]>(environment.API.BASE_URL + environment.API.ROUTES.TEMPLATES);
+  getTemplates(params: string[] = []): Observable<Template[]> {
+    return this.httpClient.get<Template[]>(environment.API.BASE_URL + environment.API.ROUTES.TEMPLATES + (params.length > 0 ? ('?' + params.join("&")) : ""));
   }
 
   saveTemplate(template: Template): Observable<Template> {

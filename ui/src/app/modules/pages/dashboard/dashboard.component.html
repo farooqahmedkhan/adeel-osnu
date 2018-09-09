@@ -1,6 +1,7 @@
 <form [formGroup]="templateFormGroup" (ngSubmit)="submit()">
   <div class="container-fluid">
     <div class="row">
+      <!-- Apps Section -->
       <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12">
         <div class="col-12 owner-apps">
           <fieldset>
@@ -9,7 +10,8 @@
             </legend>
             <ul class="list-group noty-owner" *ngIf="(ownerAppDataset | async)?.length > 0">
               <li class="list-group-item" *ngFor="let app of ownerAppDataset | async;let i = index;">
-                <input type="radio" formControlName="owner_app" value="{{ app.id }}" (change)="updateReceiverListOnRadioChange(i, app)" /> {{ app.name }}
+                <input type="radio" formControlName="owner_app" value="{{ app.id }}" (change)="updateReceiverListOnRadioChange(i, app)" />
+                {{ app.name }}
               </li>
             </ul>
           </fieldset>
@@ -17,17 +19,23 @@
         <div class="col-12 receiver-apps">
           <fieldset>
             <legend>
-              <small>Please select receiver application(s)</small>
+              <small class="float-left">Please select receiver application(s)</small>
+              <small class="float-right mt-2">
+                <input type="checkbox" (change)="checkAllReceiverApps($event.target.checked)">
+                Select&nbsp;/&nbsp;Unselect All
+              </small>
             </legend>
             <ul class="list-group noty-receiver">
               <li class="list-group-item" *ngFor="let app of receiverAppDataset | async;let i = index;">
-                <input type="checkbox" [formControl]="templateFormGroup.get('receiver_apps').controls[i]" value="{{ app.id }}" id="{{ i }}" /> {{ app.name }}
+                <input type="checkbox" [formControl]="templateFormGroup.get('receiver_apps').controls[i]" value="{{ app.id }}"
+                  id="{{ i }}" /> {{ app.name }}
               </li>
             </ul>
           </fieldset>
         </div>
       </div>
-      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12">        
+      <!-- Notification Detail Section -->
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12">
         <div class="col-12">
           <fieldset>
             <legend>Notification Template</legend>
@@ -35,13 +43,14 @@
             <div class="col-12">
               <div class="form-group">
                 <select class="form-control" (change)="loadTemplate()" formControlName="selectedTemplate">
-                  <option value="-1">Please select an existing tempalte to use</option>              
-                  <option *ngFor="let template of existingTemplates | async;let i = index;" value="{{ template.id }}">{{ template.name }}</option>
+                  <option value="-1">Please select an existing tempalte to use</option>
+                  <option *ngFor="let template of existingTemplates | async;let i = index;" value="{{ template.id }}">{{
+                    template.name }}</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Platform</label>
-                <select class="form-control" formControlName="os">
+                <select class="form-control" formControlName="os" (change)="adjustAdditionalData($event)">
                   <option value="0">IOS</option>
                   <option value="1">Android</option>
                 </select>
@@ -77,7 +86,8 @@
                           <input type="text" class="form-control" placeholder="Value" formControlName="value">
                         </div>
                       </div>
-                      <span class="col-1 remove-icon" (click)="removeAdditionalField(i)" [hidden]="i == 0">
+                      <!-- [hidden]="i == 0" -->
+                      <span class="col-1 remove-icon" (click)="removeAdditionalField(i)">
                         <i class="fa fa-trash fa-2x text-primary"></i>
                       </span>
                     </div>
@@ -93,10 +103,16 @@
                 </div>
               </div>
             </div>
-            <div class="col-12">
+            <!-- <div class="col-12">
               <div class="form-group">
                 <label>Launch URL</label>
                 <input type="text" class="form-control" placeholder="http://bit.ly/abc" formControlName="launch_url">
+              </div>
+            </div> -->
+            <div class="col-12">
+              <div class="form-group">
+                <label>Big Picture URL</label>
+                <input type="text" class="form-control" placeholder="http://bit.ly/abc" formControlName="big_picture">
               </div>
             </div>
           </fieldset>
@@ -104,11 +120,16 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
     <div class="row">
-      <div class="col-12 float-left text-center">
-          <button type="submit" class="btn btn-primary float-right btn-sm" [disabled]="!templateFormGroup.valid">Send Notification</button>
+      <div class="col-12">
+        
       </div>
     </div>
-  </div>
+  </div> -->  
+  <button type="submit" class="btn btn-primary float-left btn-sm ml-3" [disabled]="!templateFormGroup.valid">Send Notification</button>
 </form>
+<span class="pl-2">
+  <input type="checkbox" [(ngModel)]="saveAsTemplate" >
+  <label class="text-primary">Save details as template</label>
+</span>

@@ -92,17 +92,17 @@ class NotificationController extends BaseController
             'os' => 'required',
             'sender' => 'required',
             'receiver' => 'required',
-            'launch_url' => 'required'            
+            // 'launch_url' => 'required'            
         ]);
 
         if(!$validator->fails()){
+            $data = '';
             $params = $request->all();            
             $apps = \App\Models\App::findMany($params['receiver']);            
             foreach($apps as $app){
-                $client = $app->getOneSignalClient();
-                $client->sendNotificationToAll($params['message'], $params['launch_url'], $params['additional_fields'], null, null);
+                \App\Jobs\SendNotification::dispatch($app->id, $params['message'], $params['additional_fields'])->delay(now()->addSeconds(5));
             }
-            $response = $this->makeJSONResponse(true, '', true, []);
+            $response = $this->makeJSONResponse(true, '', $params, []);
         }else{
             $response = $this->makeJSONResponse(false, 'Invalid request', [], []);
         }

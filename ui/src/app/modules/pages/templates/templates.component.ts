@@ -12,8 +12,8 @@ import { TemplateDetailModalComponent } from '../../shared/modals/template-detai
   styleUrls: ['./templates.component.css']
 })
 export class TemplatesComponent implements OnInit {
-
   modal: NgbModalRef;
+  private _requestParameters: string[] = [];
   templates: Observable<Template[]>;
   constructor(private modalService: NgbModal, private templateService: TemplateService) { }
 
@@ -22,6 +22,7 @@ export class TemplatesComponent implements OnInit {
   }
 
   openTemplateCreateModal(){
+    this.modalService.dismissAll('');
     this.modal = this.modalService.open(TemplateDetailModalComponent, { 
       backdrop: 'static', 
       keyboard: false, 
@@ -41,6 +42,7 @@ export class TemplatesComponent implements OnInit {
   }
 
   openTemplateEditModal(template: Template){
+    this.modalService.dismissAll('');
     this.modal = this.modalService.open(TemplateEditModalComponent, { 
       backdrop: 'static', 
       keyboard: false, 
@@ -60,8 +62,16 @@ export class TemplatesComponent implements OnInit {
     });
   }
 
-  refreshData(){
-    this.templates = this.templateService.getTemplates();
-  }
+  refreshData(params: string[] = this._requestParameters){ this.templates = this.templateService.getTemplates(params);}
+
+  filterByKey(key: string, value: number){
+    let index: number = this._requestParameters.findIndex((s) => s.startsWith(key + '='));
+    if(index > -1){
+      this._requestParameters[index] = key + "=" + value;
+    }else{
+      this._requestParameters.push(key + "=" + value);
+    }
+    this.refreshData();
+  } 
 
 }

@@ -27,4 +27,13 @@ class Template extends Model
     public function getPlatformNameAttribute(){
         return config('settings')['platforms'][$this->os];
     }
+
+    public static function scopeFilterByRequest($query, $params = []){
+        foreach($params as $key => $value){             
+            if(in_array($value, [0,1])){
+                $query = $query->where($key, $params[$key]);
+            }            
+        }        
+        return $query;
+    }
 }

@@ -45,7 +45,8 @@
                     <input type="text" class="form-control" placeholder="Value" formControlName="value">
                   </div>
                 </div>
-                <span class="col-1 remove-icon" (click)="removeAdditionalField(i)" [hidden]="i == 0">
+                <!-- [hidden]="i == 0" -->
+                <span class="col-1 remove-icon" (click)="removeAdditionalField(i)">
                   <i class="fa fa-trash fa-2x text-primary"></i>
                 </span>
               </div>
@@ -60,10 +61,16 @@
           </div>
         </div>
       </div>
-      <div class="col-12">
+      <!-- <div class="col-12">
         <div class="form-group">
           <label>Launch URL</label>
           <input type="text" class="form-control" placeholder="http://bit.ly/abc" formControlName="launch_url">
+        </div>
+      </div> -->
+      <div class="col-12">
+        <div class="form-group">
+          <label>Big Picture URL</label>
+          <input type="text" class="form-control" placeholder="http://bit.ly/abc" formControlName="big_picture">
         </div>
       </div>
     </div>

@@ -20,4 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('applications', 'AppController');
 Route::resource('templates', 'TemplateController');
 Route::resource('notifications', 'NotificationController');
+
 Route::post('/send_notification', 'NotificationController@send');
+Route::put('applications/{id}/state/{state}', 'AppController@updateApplicationState');

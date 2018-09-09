@@ -12,7 +12,16 @@
                 <tr>
                   <th>#</th>
                   <th>Name</th>                  
-                  <th>Platform</th>
+                  <th class="text-center">
+                    <div ngbDropdown class="d-inline-block">
+                      <span ngbDropdownToggle ngbTooltip="Click to filter by 'Platform'" placement="top" container="body">Platform <i class="fa fa-carrot-down"></i></span>
+                      <div ngbDropdownMenu aria-labelledby="ddAppPlatform">
+                        <button class="dropdown-item" (click)="filterByKey('os',-1)">All</button>
+                        <button class="dropdown-item" (click)="filterByKey('os',1)">Android</button>
+                        <button class="dropdown-item" (click)="filterByKey('os',0)">IOS</button>
+                      </div>
+                    </div>
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -20,7 +29,7 @@
                 <tr *ngFor="let template of templates | async;let i = index;">
                   <td>{{ i + 1 }}</td>
                   <td>{{ template.name }}</td>
-                  <td>{{ template.platform_name }}</td>                  
+                  <td class="text-center">{{ template.platform_name }}</td>                  
                   <td>
                     <a href="javascript:void" (click)="openTemplateEditModal(template)">
                         <span ngbTooltip="Edit this record" placement="top"><i class="fa fa-pencil"></i></span>

@@ -11,8 +11,8 @@ export class ApplicationService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getApplications(): Observable<Application[]> {
-    return this.httpClient.get<Application[]>(environment.API.BASE_URL + environment.API.ROUTES.APPS);
+  getApplications(params: string[] = []): Observable<Application[]> {
+    return this.httpClient.get<Application[]>(environment.API.BASE_URL + environment.API.ROUTES.APPS + (params.length > 0 ? ('?' + params.join("&")) : ""));
   }
 
   saveApplication(application: Application): Observable<Application> {
@@ -20,10 +20,15 @@ export class ApplicationService {
   }
 
   updateApplication(identifier: Number, application: Application): Observable<Application> {
+    console.log('App =>', application);
     return this.httpClient.put<Application>(environment.API.BASE_URL + environment.API.ROUTES.APPS + identifier, application);
   }
 
   getApplication(identifier: Number): Observable<Application>{
     return this.httpClient.get<Application>(environment.API.BASE_URL + environment.API.ROUTES.APPS + identifier);
+  }
+
+  updateState(identifier: Number, state: boolean): Observable<Application>{
+    return this.httpClient.put<Application>(environment.API.BASE_URL + environment.API.ROUTES.APPS + identifier + '/state/' + state, []);
   }
 }

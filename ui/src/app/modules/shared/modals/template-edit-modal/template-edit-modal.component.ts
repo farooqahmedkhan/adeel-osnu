@@ -3,6 +3,8 @@ import { Template } from '../../../core/models/template.model';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TemplateService } from '../../../pages/templates/template.service';
+import { TemplateEditFormGroupMockup } from '../../../core/mockups/dashboard.ui.formgroup.mockup';
+import { UiService } from '../../../core/services/ui.service';
 
 @Component({
   selector: 'app-template-edit-modal',
@@ -12,40 +14,43 @@ import { TemplateService } from '../../../pages/templates/template.service';
 export class TemplateEditModalComponent implements OnInit {
   _templateId: Number;
   private template: Template = null;
-  public templateFormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    os: new FormControl('1', Validators.required),
-    message: new FormControl('', Validators.required),
-    additional_fields: new FormArray([]),
-    launch_url: new FormControl('', Validators.required)
-  });
+  public templateFormGroup = TemplateEditFormGroupMockup;
 
-  constructor(public activeModal: NgbModal, private templateService: TemplateService) { 
+  constructor(public activeModal: NgbModal, private templateService: TemplateService, private uiService: UiService) { 
 
   }
 
   ngOnInit() {
+    console.log(this.templateFormGroup);
+    this.templateFormGroup.reset();
+    // this.templateFormGroup.get('additional_fields').setValue([]);
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Loading template details. Please wait...');
     this.templateService.getTemplate(this._templateId)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);            
-      
+      // this.template.additional_fields.forEach((it, i, src) => src.splice(0));
+      // console.log(this.template.additional_fields);
       this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());
+      // console.log(this.template);
 
-      this.templateFormGroup.setValue({
-        os: res.os,
-        name: this.template.name,
-        message: this.template.message,
-        launch_url: this.template.launch_url,
-        additional_fields: this.template.additional_fields
-      });      
+      // this.templateFormGroup.setValue({
+      //   os: res.os,
+      //   name: this.template.name,
+      //   message: this.template.message,
+      //   // launch_url: this.template.launch_url,
+      //   additional_fields: this.template.additional_fields,
+      //   big_picture: this.template.big_picture || ""
+      // });      
+      this.uiService.stopLoader();
     });    
   }
 
   addNewAdditionalFieldRow(){
     let array = this.templateFormGroup.get('additional_fields') as FormArray;
     array.push(new FormGroup({
-      key: new FormControl(),
-      value: new FormControl()
+      key: new FormControl(''),
+      value: new FormControl('')
     }));
   }
 
@@ -55,8 +60,11 @@ export class TemplateEditModalComponent implements OnInit {
   }
 
   submit(){    
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Updating template. Please wait...');
     let handle = this.templateService.updateTemplate(this._templateId, <Template>this.templateFormGroup.value);
     handle.subscribe((res: Template) => {      
+      this.uiService.stopLoader();
       this.activeModal.dismissAll('save');
     });
   }

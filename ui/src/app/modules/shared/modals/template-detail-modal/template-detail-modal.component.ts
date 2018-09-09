@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TemplateService } from '../../../pages/templates/template.service';
 import { Template } from '../../../core/models/template.model';
+import { CustomFormGroup } from '../../../core/custom_controls/CustomFormGroup.control';
+import { AndroidMandatoryFormGroups, IOSMandatoryFormGroups, TemplateDetailFormGroupMockup } from '../../../core/mockups/dashboard.ui.formgroup.mockup';
+import { UiService } from '../../../core/services/ui.service';
 
 @Component({
   selector: 'app-template-detail-modal',
@@ -11,20 +14,9 @@ import { Template } from '../../../core/models/template.model';
 })
 export class TemplateDetailModalComponent implements OnInit {
   private template: Template = null;
-  public templateFormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    os: new FormControl('1', Validators.required),
-    message: new FormControl('', Validators.required),
-    additional_fields: new FormArray([
-      new FormGroup({
-        key: new FormControl(''),
-        value: new FormControl('')
-      })      
-    ]),
-    launch_url: new FormControl('', Validators.required)
-  });
+  public templateFormGroup = TemplateDetailFormGroupMockup;
 
-  constructor(public activeModal: NgbModal, private tempalteService: TemplateService) { 
+  constructor(public activeModal: NgbModal, private tempalteService: TemplateService, private uiService: UiService) { 
 
   }
 
@@ -33,7 +25,7 @@ export class TemplateDetailModalComponent implements OnInit {
 
   addNewAdditionalFieldRow(){
     let array = this.templateFormGroup.get('additional_fields') as FormArray;
-    array.push(new FormGroup({
+    array.push(new CustomFormGroup({
       key: new FormControl(),
       value: new FormControl()
     }));
@@ -45,14 +37,38 @@ export class TemplateDetailModalComponent implements OnInit {
   }
 
   submit(){    
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Saving template. Please wait...');
     let handle = this.tempalteService.saveTemplate(<Template>this.templateFormGroup.value);
     handle.subscribe((res: Template) => {      
+      this.uiService.stopLoader();
       this.activeModal.dismissAll('save');
     });
   }
 
   get additionalValues(){
     return <FormArray>this.templateFormGroup.get('additional_fields');
+  }
+
+  adjustAdditionalData(event: any){          
+    // remove all mandatory fields first
+    this.additionalValues.controls.forEach((value: AbstractControl, i: number, obj: AbstractControl[]) => {      
+      if((value as CustomFormGroup).isMandatoryControl){        
+        (obj as CustomFormGroup[]).splice(i);
+      }
+    });    
+
+    // update control list
+    let controlSource: CustomFormGroup[] = (event.target.value  == 1) ? AndroidMandatoryFormGroups : IOSMandatoryFormGroups;    
+    controlSource.forEach((it: CustomFormGroup) => {
+      let key_name: string = (it.get('key') as FormControl).value;      
+      let index: number = this.additionalValues.controls.findIndex((value: AbstractControl, i: number, obj: AbstractControl[]) => {
+        return (((value as CustomFormGroup).get('key') as FormControl).value == key_name);            
+      });      
+      if(index == -1){
+        this.additionalValues.controls.unshift(it);
+      }      
+    });        
   }
 
 }

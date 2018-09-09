@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Application } from '../../../core/models/application.model';
 import { ApplicationService } from '../../../pages/applications/application.service';
+import { UiService } from '../../../core/services/ui.service';
 
 @Component({
   selector: 'app-application-edit-modal',
@@ -17,13 +18,14 @@ export class ApplicationEditModalComponent implements OnInit {
     name: new FormControl('', Validators.required),
     os: new FormControl('1', Validators.required),
     one_signal_key: new FormControl('', Validators.required),
-    one_signal_rest_api_key: new FormControl('', Validators.required),
-    one_signal_user_auth_key: new FormControl('')
+    one_signal_rest_api_key: new FormControl('', Validators.required)    
   });
   
-  constructor(public activeModal: NgbModal, private applicationService: ApplicationService) { }
+  constructor(public activeModal: NgbModal, private applicationService: ApplicationService, private uiService: UiService) { }
 
   ngOnInit() {    
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Loading application details. Please wait...');
     this.applicationService.getApplication(this._applicationId)
       .subscribe((_res: Application) => { 
         this._application = _res;
@@ -31,15 +33,20 @@ export class ApplicationEditModalComponent implements OnInit {
           name: this._application.name,
           os: this._application.os,
           one_signal_key: this._application.one_signal_key,
-          one_signal_rest_api_key: this._application.one_signal_rest_api_key,
-          one_signal_user_auth_key: this._application.one_signal_user_auth_key
+          one_signal_rest_api_key: this._application.one_signal_rest_api_key          
         });
+        this.uiService.stopLoader();
       });
   }
 
   submit(){
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Updating application. Please wait...');
     this.applicationService.updateApplication(this._applicationId, this.applicationFormGroup.value)
-    .subscribe(() => this.activeModal.dismissAll('update'));
+    .subscribe(() => { 
+      this.uiService.stopLoader();
+      this.activeModal.dismissAll('update');
+    });
   }
   
 

@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormArray, Validators, FormGroup } from '@angular/forms';
+import { FormControl, FormArray, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DashboardFormGroupMockup } from 'src/app/modules/core/mockups/dashboard.ui.formgroup.mockup';
+import { DashboardFormGroupMockup, IOSMandatoryFormGroups, AndroidMandatoryFormGroups } from 'src/app/modules/core/mockups/dashboard.ui.formgroup.mockup';
 import { Template } from 'src/app/modules/core/models/template.model';
 import { Application } from 'src/app/modules/core/models/application.model';
 import { TemplateService } from 'src/app/modules/pages/templates/template.service';
 import { ApplicationService } from 'src/app/modules/pages/applications/application.service';
 import { NotificationService } from 'src/app/modules/core/services/notification.service';
+import { CustomFormGroup } from '../../core/custom_controls/CustomFormGroup.control';
+import { UiService } from '../../core/services/ui.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,17 +27,24 @@ export class DashboardComponent implements OnInit {
 
   private _modalRef: NgbModalRef;
   public templateFormGroup = DashboardFormGroupMockup;
+  public saveAsTemplate: boolean = false;
 
   constructor(
     private applicationService: ApplicationService, 
     private templateService: TemplateService, 
     private modalService: NgbModal,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private uiService: UiService
   ) { }
 
-  ngOnInit() { this.refreshData();}
+  ngOnInit() { 
+    this.templateFormGroup.patchValue({os: 1});
+    this.refreshData();
+  }
 
-  loadTemplate(){
+  loadTemplate(){    
+    this.uiService.startLoader();
+    this.uiService.updateLoader('Loading template. Please wait...');
     this.templateService.getTemplate(this.templateFormGroup.get('selectedTemplate').value)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);           
@@ -46,30 +55,52 @@ export class DashboardComponent implements OnInit {
         os: res.os,
         name: this.template.name,
         message: this.template.message,
-        launch_url: this.template.launch_url,
-        additional_fields: this.template.additional_fields
+        // launch_url: this.template.launch_url,
+        additional_fields: this.template.additional_fields,
+        big_picture: this.template.big_picture || ""
       });      
+      this.uiService.stopLoader();
     });
   }
 
-  addNewAdditionalFieldRow(){ this.additionalValues.push(new FormGroup({ key: new FormControl(), value: new FormControl() }));}
+  addNewAdditionalFieldRow(){ this.additionalValues.push(new CustomFormGroup({ key: new FormControl(), value: new FormControl() }));}
   removeAdditionalField(index: number){ this.additionalValues.removeAt(index);}
 
   get additionalValues(){ return <FormArray>this.templateFormGroup.get('additional_fields');}
   get receiverCheckboxControls(){ return <FormArray>this.templateFormGroup.get('receiver_apps');}
 
-  submit(){        
+  submit(){       
+    this.uiService.startLoader();    
+
     let data:any = this.templateFormGroup.value;                    
-    let postObject = {
-      sender: data.owner_app,
-      receiver: this.receiverApps,
-      name: data.name,
-      message: data.message,
-      os: data.os,
-      launch_url: data.launch_url,
-      additional_fields: data.additional_fields
+    let pObj = { sender: data.owner_app, receiver: this.receiverApps, name: data.name, message: data.message, os: data.os, additional_fields: {}};
+    Array.from(data.additional_fields).map((v: any, i, s) => pObj.additional_fields[v.key] = v.value);
+    
+    if(this.saveAsTemplate){
+      this.uiService.updateLoader('Saving template. Please wait...');
+      this.templateService.saveTemplate(<Template>{ 
+        name: data.name, 
+        message: data.message, 
+        os: data.os, 
+        additional_fields: data.additional_fields, 
+        big_picture: data.big_picture
+      })
+      .subscribe((res: Template) => {
+        this.uiService.updateLoader('Sending notifications. Please wait...')
+        this.notificationService.sendNotification(pObj).subscribe((res: any) => {
+          this.uiService.updateLoader('Notification sent successfully.');
+          this.uiService.stopLoader();
+          alert('Notification(s) has been sent.');
+        });
+      })
+    } else {
+      this.uiService.updateLoader('Sending notifications. Please wait...')
+      this.notificationService.sendNotification(pObj).subscribe((res: any) => {
+        this.uiService.updateLoader('Notification sent successfully.');
+        this.uiService.stopLoader();
+        alert('Notification(s) has been sent.');
+      });
     }
-    this.notificationService.sendNotification(postObject).subscribe((res: any) => alert('Notification(s) has been sent.'));
   }
 
   updateReceiverListOnRadioChange(index: number, app: Application){    
@@ -83,18 +114,16 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  private get receiverApps() {
-    return this.receiverCheckboxControls.controls.map((control, index) => {
-      return {
-        disabled: control.disabled,
-        value: this.receiverApplications[index],
-        checked: control.value
+  checkAllReceiverApps(value: boolean){    
+    this.receiverCheckboxControls.controls.forEach((v: FormControl) => {
+      if(v.enabled){
+        v.setValue(value);
       }
-    }).filter((iterator, index, source) => (!iterator.disabled && iterator.checked)).map((r) => r.value.id);
+    });
   }
 
   refreshData(){
-    this.receiverAppDataset = this.ownerAppDataset = this.applicationService.getApplications();    
+    this.receiverAppDataset = this.ownerAppDataset = this.applicationService.getApplications(["enabled=1"]);    
     this.receiverAppDataset.subscribe((value: Application[]) => {            
       this.receiverApplications = value;
       value.forEach((i: Application) => this.receiverCheckboxControls.push(new FormControl(false)));
@@ -104,4 +133,36 @@ export class DashboardComponent implements OnInit {
     });    
     this.existingTemplates = this.templateService.getTemplates();
   }
+
+  private get receiverApps() {
+    return this.receiverCheckboxControls.controls.map((control, index) => {
+      return {
+        disabled: control.disabled,
+        value: this.receiverApplications[index],
+        checked: control.value
+      }
+    }).filter((iterator, index, source) => (!iterator.disabled && iterator.checked && iterator.value !== undefined)).map((r) => r.value.id);
+  }
+
+  adjustAdditionalData(event: any){          
+    // remove all mandatory fields first
+    this.additionalValues.controls.forEach((value: AbstractControl, i: number, obj: AbstractControl[]) => {      
+      if((value as CustomFormGroup).isMandatoryControl){        
+        (obj as CustomFormGroup[]).splice(i);
+      }
+    });    
+
+    // update control list
+    let controlSource: CustomFormGroup[] = (event.target.value  == 1) ? AndroidMandatoryFormGroups : IOSMandatoryFormGroups;
+    controlSource.forEach((it: CustomFormGroup) => {
+      let key_name: string = (it.get('key') as FormControl).value;      
+      let index: number = this.additionalValues.controls.findIndex((value: AbstractControl, i: number, obj: AbstractControl[]) => {
+        return (((value as CustomFormGroup).get('key') as FormControl).value == key_name);            
+      });
+      if(index == -1){
+        this.additionalValues.controls.unshift(it);
+      }      
+    });        
+  }
+
 }

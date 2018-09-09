@@ -13,9 +13,10 @@ class TemplateController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $templates = \App\Models\Template::all();
+        $q = \App\Models\Template::filterByRequest($request->only(['os']));
+        $templates = $q->get();
         return $this->makeJSONResponse(true, '', $templates, []);
     }
 
@@ -52,8 +53,9 @@ class TemplateController extends BaseController
                 "json" => json_encode(array(
                     "name" => $params['name'],
                     "message" => $params['message'],
-                    "launch_url" => $params['launch_url'],
-                    "additional_fields" => $params['additional_fields']
+                    // "launch_url" => $params['launch_url'],
+                    "additional_fields" => $params['additional_fields'],
+                    'big_picture' => $params['big_picture']
                 )),
                 "parent_id" => null
             );
@@ -130,8 +132,9 @@ class TemplateController extends BaseController
                 "json" => json_encode(array(
                     "name" => $params['name'],
                     "message" => $params['message'],
-                    "launch_url" => $params['launch_url'],
-                    "additional_fields" => $params['additional_fields']
+                    // "launch_url" => $params['launch_url'],
+                    "additional_fields" => $params['additional_fields'],
+                    'big_picture' => $params['big_picture']
                 )),
                 "parent_id" => null
             );

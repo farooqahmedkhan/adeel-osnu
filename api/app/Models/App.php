@@ -12,15 +12,15 @@ class App extends Model
     protected $fillable = array(
         'name',
         'one_signal_key',
-        'one_signal_rest_api_key',
-        'one_signal_user_auth_key',
+        'one_signal_rest_api_key',   
         'os'                  
     );
 
     protected $visible = array(
         'id',        
         'name',        
-        'platform_name'
+        'platform_name',
+        'enabled'
     );
 
     protected $appends = array(
@@ -34,5 +34,14 @@ class App extends Model
     public function getOneSignalClient(){
         $client = new OneSignalClient($this->one_signal_key, $this->one_signal_rest_api_key, $this->one_signal_user_auth_key);
         return $client;
+    }
+
+    public static function scopeFilterByRequest($query, $params = []){
+        foreach($params as $key => $value){             
+            if(in_array($value, [0,1])){
+                $query = $query->where($key, $params[$key]);
+            }            
+        }        
+        return $query;
     }
 }

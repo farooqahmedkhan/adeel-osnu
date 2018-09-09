@@ -13,9 +13,10 @@ class AppController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $apps = \App\Models\App::all();
+        $q = \App\Models\App::filterByRequest($request->only(['enabled', 'os']));
+        $apps = $q->get();
         return $this->makeJSONResponse(true, '', $apps, []);                
     }
 
@@ -41,8 +42,7 @@ class AppController extends BaseController
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'one_signal_key' => 'required',
-            'one_signal_rest_api_key' => 'required',
-            'one_signal_user_auth_key' => 'required',
+            'one_signal_rest_api_key' => 'required',            
             'os' => 'required'
         ]);
 
@@ -72,8 +72,7 @@ class AppController extends BaseController
                 'id' => $app->id,
                 'name' => $app->name,                
                 'one_signal_key' => $app->one_signal_key,
-                'one_signal_rest_api_key' => $app->one_signal_rest_api_key,
-                'one_signal_user_auth_key' => $app->one_signal_user_auth_key,
+                'one_signal_rest_api_key' => $app->one_signal_rest_api_key,                
                 'os' => $app->os
             );     
             return $this->makeJSONResponse(true, '', $data, []);
@@ -111,8 +110,7 @@ class AppController extends BaseController
             'id' => 'required|exists:apps',
             'name' => 'required',
             'one_signal_key' => 'required',
-            'one_signal_rest_api_key' => 'required',
-            'one_signal_user_auth_key' => 'required',
+            'one_signal_rest_api_key' => 'required',            
             'os' => 'required'
         ]);
                 
@@ -123,8 +121,7 @@ class AppController extends BaseController
                 'id' => $app->id,
                 'name' => $app->name,
                 'one_signal_key' => $app->one_signal_key,
-                'one_signal_rest_api_key' => $app->one_signal_rest_api_key,
-                'one_signal_user_auth_key' => $app->one_signal_user_auth_key,
+                'one_signal_rest_api_key' => $app->one_signal_rest_api_key,                
                 'os' => $app->os
             );     
             $response = $this->makeJSONResponse(true, $status, $data, []);
@@ -151,6 +148,23 @@ class AppController extends BaseController
             return $this->makeJSONResponse(true, 'App deleted successfully', [], []);
         }else{
             return $this->makeJSONResponse(false, 'Invalid request', [], []);
+        }
+    }
+
+
+    public function updateApplicationState(Request $request, $id, $state) {
+        $validator = Validator::make(array('id' => $id), [
+            'id' => 'exists:apps'
+        ]);
+        if(!$validator->fails()){
+            
+            $app = \App\Models\App::find($id);
+            $app->enabled = ($state == "true" ? 1 : 0);
+            $app->save();
+
+            return $this->makeJSONResponse(true, 'App updated successfully', $app, []);
+        }else{
+            return $this->makeJSONResponse(false, 'Invalid request', null, []);
         }
     }
 }

@@ -7,13 +7,17 @@ import { ApplicationService } from './applications/application.service';
 import { HttpClientModule } from '@angular/common/http';
 import { TemplateService } from './templates/template.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
+import { UiSwitchModule } from 'ngx-ui-switch';
+import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    UiSwitchModule,
+    NgbDropdownModule,
+    NgbTooltipModule
   ],
   declarations: [DashboardComponent, ApplicationsComponent, TemplatesComponent],
   exports: [
