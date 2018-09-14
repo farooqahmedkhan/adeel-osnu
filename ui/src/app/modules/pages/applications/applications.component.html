@@ -24,7 +24,7 @@
                 </th>
                 <th class="text-center">
                   <div ngbDropdown class="d-inline-block">                    
-                    <span ngbDropdownToggle ngbTooltip="Click to filter by 'State'" placement="top" container="body">State <i class="fa fa-carrot-down" [ngClass]="{ 'text-primary': isFilterByState}"></i></span>
+                    <span ngbDropdownToggle ngbTooltip="Click to filter by 'State'" placement="top" container="body">State <i class="fa fa-carrot-down"></i></span>
                     <div ngbDropdownMenu aria-labelledby="ddAppState">
                       <button class="dropdown-item" (click)="filterByKey('enabled',-1)">All</button>
                       <button class="dropdown-item" (click)="filterByKey('enabled', 1)">Enabled</button>

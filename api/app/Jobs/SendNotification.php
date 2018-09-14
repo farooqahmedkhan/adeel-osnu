@@ -39,16 +39,16 @@ class SendNotification implements ShouldQueue
         $app = \App\Models\App::find($this->_receiver);
         if(!empty($app)){
             $client = $app->getOneSignalClient();
-            // $client->sendNotificationToAll($this->_message, null, $this->_data, null, null);
-            $client->sendNotificationCustom([
-                'app_id' => $app->one_signal_key,
-                'api_key' => $app->one_signal_rest_api_key,
-                'data' => $this->_data,
-                'content' => array(
-                    'en' => $this->_message
-                ),
-                'big_picture' => $this->_big_picture
-            ]);
+            $response = $client->sendNotificationToAll($this->_message, null, $this->_data, null, null);
+            // $response = $client->sendNotificationCustom([
+            //     'app_id' => $app->one_signal_key,
+            //     'api_key' => $app->one_signal_rest_api_key,
+            //     'data' => $this->_data,
+            //     'content' => array(
+            //         'en' => $this->_message
+            //     ),
+            //     'big_picture' => $this->_big_picture
+            // ]);            
         }        
     }
 }

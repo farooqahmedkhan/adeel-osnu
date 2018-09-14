@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Application } from '../../../core/models/application.model';
 import { ApplicationService } from '../../../pages/applications/application.service';
 import { UiService } from '../../../core/services/ui.service';
+import { ApplicationDetailFormGroupMockup } from '../../../core/mockups/formgroup.mockups';
 
 @Component({
   selector: 'app-application-edit-modal',
@@ -14,18 +15,12 @@ export class ApplicationEditModalComponent implements OnInit {
   @Input('id') _applicationId: Number;
   _application: Application;
 
-  applicationFormGroup = new FormGroup({    
-    name: new FormControl('', Validators.required),
-    os: new FormControl('1', Validators.required),
-    one_signal_key: new FormControl('', Validators.required),
-    one_signal_rest_api_key: new FormControl('', Validators.required)    
-  });
+  applicationFormGroup = ApplicationDetailFormGroupMockup;
   
   constructor(public activeModal: NgbModal, private applicationService: ApplicationService, private uiService: UiService) { }
 
   ngOnInit() {    
-    this.uiService.startLoader();
-    this.uiService.updateLoader('Loading application details. Please wait...');
+    this.uiService.startLoader('Loading application details. Please wait...');    
     this.applicationService.getApplication(this._applicationId)
       .subscribe((_res: Application) => { 
         this._application = _res;
@@ -40,8 +35,7 @@ export class ApplicationEditModalComponent implements OnInit {
   }
 
   submit(){
-    this.uiService.startLoader();
-    this.uiService.updateLoader('Updating application. Please wait...');
+    this.uiService.startLoader('Updating application. Please wait...');    
     this.applicationService.updateApplication(this._applicationId, this.applicationFormGroup.value)
     .subscribe(() => { 
       this.uiService.stopLoader();

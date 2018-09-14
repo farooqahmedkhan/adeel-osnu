@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TemplateService } from '../../../pages/templates/template.service';
 import { Template } from '../../../core/models/template.model';
 import { CustomFormGroup } from '../../../core/custom_controls/CustomFormGroup.control';
-import { AndroidMandatoryFormGroups, IOSMandatoryFormGroups, TemplateDetailFormGroupMockup } from '../../../core/mockups/dashboard.ui.formgroup.mockup';
+import { AndroidMandatoryFormGroups, IOSMandatoryFormGroups, TemplateDetailFormGroupMockup } from '../../../core/mockups/formgroup.mockups';
 import { UiService } from '../../../core/services/ui.service';
 
 @Component({

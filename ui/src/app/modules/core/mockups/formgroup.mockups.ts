@@ -48,3 +48,10 @@ export const IOSMandatoryFormGroups = [
 export const AndroidMandatoryFormGroups = [    
     new CustomFormGroup({ key: new FormControl('app-name'), value: new FormControl('')}, null, null, true)
 ];
+
+export const ApplicationDetailFormGroupMockup = new FormGroup({
+    name: new FormControl('', Validators.required),
+    os: new FormControl('1', Validators.required),
+    one_signal_key: new FormControl('', Validators.required),
+    one_signal_rest_api_key: new FormControl('', Validators.required)    
+});

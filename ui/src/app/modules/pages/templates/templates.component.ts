@@ -5,6 +5,7 @@ import { TemplateEditModalComponent } from '../../shared/modals/template-edit-mo
 import { Observable } from 'rxjs';
 import { TemplateService } from './template.service';
 import { TemplateDetailModalComponent } from '../../shared/modals/template-detail-modal/template-detail-modal.component';
+import { UiService } from '../../core/services/ui.service';
 
 @Component({
   selector: 'app-templates',
@@ -13,65 +14,24 @@ import { TemplateDetailModalComponent } from '../../shared/modals/template-detai
 })
 export class TemplatesComponent implements OnInit {
   modal: NgbModalRef;
-  private _requestParameters: string[] = [];
   templates: Observable<Template[]>;
-  constructor(private modalService: NgbModal, private templateService: TemplateService) { }
+  private _requestParameters: string[] = [];
 
-  ngOnInit() {
-    this.refreshData();
-  }
+  constructor(private modalService: NgbModal, private templateService: TemplateService, private uiService: UiService) { }
 
-  openTemplateCreateModal(){
-    this.modalService.dismissAll('');
-    this.modal = this.modalService.open(TemplateDetailModalComponent, { 
-      backdrop: 'static', 
-      keyboard: false, 
-      centered: true, 
-      size: 'lg'
-    });    
-    this.modal.result.then((value: String) => {}, (value: String) => {
-      switch(value){
-        case "save":
-        case "update":
-          this.refreshData();
-          break;
-        default:
-          break;
-      }
-    });
-  }
+  ngOnInit() { this.refreshData() }
 
+  openTemplateCreateModal(){ this.modal = this.uiService.showModal(TemplateDetailModalComponent, this.refreshData);}
   openTemplateEditModal(template: Template){
-    this.modalService.dismissAll('');
-    this.modal = this.modalService.open(TemplateEditModalComponent, { 
-      backdrop: 'static', 
-      keyboard: false, 
-      centered: true, 
-      size: 'lg'
-    });
-    (<TemplateEditModalComponent>this.modal.componentInstance)._templateId = template.id;
-    this.modal.result.then((value: String) => {}, (value: String) => {
-      switch(value){
-        case "save":
-        case "update":
-          this.refreshData();
-          break;
-        default:
-          break;
-      }
-    });
+    this.modal = this.uiService.showModal(TemplateEditModalComponent, this.refreshData);    
+    (<TemplateEditModalComponent>this.modal.componentInstance)._templateId = template.id;    
   }
 
   refreshData(params: string[] = this._requestParameters){ this.templates = this.templateService.getTemplates(params);}
 
   filterByKey(key: string, value: number){
     let index: number = this._requestParameters.findIndex((s) => s.startsWith(key + '='));
-    if(index > -1){
-      this._requestParameters[index] = key + "=" + value;
-    }else{
-      this._requestParameters.push(key + "=" + value);
-    }
+    (index > -1) ? (this._requestParameters[index] = `${key}=${value}`) : (this._requestParameters.push(`${key}=${value}`));    
     this.refreshData();
-  } 
-
+  }
 }

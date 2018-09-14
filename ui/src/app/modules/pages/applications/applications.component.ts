@@ -14,8 +14,8 @@ import { UiService } from '../../core/services/ui.service';
 })
 export class ApplicationsComponent implements OnInit, OnDestroy {
   private modal: NgbModalRef;
-  private _requestParameters: string[] = [];
   applications: Observable<Application[]>;
+  private _requestParameters: string[] = [];
 
   constructor(private applicationService: ApplicationService, private modalService: NgbModal, private uiService: UiService) { }
 
@@ -23,75 +23,32 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    * Lifecycle Events
    */
 
-  ngOnInit() { this.refreshData();}
+  ngOnInit() { this.refreshData()}
 
-  ngOnDestroy() {
-    console.debug('----- Applications component destroyed -----');
-    this.modalService.dismissAll('Application component destroyed');    
+  ngOnDestroy() {        
+    this.modalService.dismissAll('destroy')
   }
 
   /**
    * View Events
    */
-  openApplicationCreateModal(){    
-    this.modalService.open(ApplicationDetailModalComponent, { centered: true, backdrop: 'static', size: 'lg', keyboard: false})
-    .result.then((value: String) => { }, (value: String) => { 
-      switch(value){
-        case "save":
-        case "update":
-          this.refreshData();
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
+  openApplicationCreateModal() { this.modal = this.uiService.showModal(ApplicationDetailModalComponent, this.refreshData); }
   openApplicationEditModal(application: Application) {
-    this.modal = this.modalService.open(ApplicationEditModalComponent, { 
-      centered: true, 
-      backdrop: 'static', 
-      size: 'lg', 
-      keyboard: false,      
-    });
-    (<ApplicationEditModalComponent>this.modal.componentInstance)._applicationId = application.id;
-    this.modal.result.then((value: String) => {}, (value: String) => {
-      switch(value){
-        case "save":
-        case "update":
-          this.refreshData();
-          break;
-        default:
-          break;
-      }
-    })
+    this.modal = this.uiService.showModal(ApplicationEditModalComponent, this.refreshData);
+    (<ApplicationEditModalComponent>this.modal.componentInstance)._applicationId = application.id;    
   }
 
   refreshData(params: string[] = this._requestParameters) { this.applications = this.applicationService.getApplications(params); }
 
-  toggleApplicationState(value: any, obj: Application) {     
-    this.uiService.startLoader();
-    this.uiService.updateLoader('Updating application state. Please wait...');        
-    this.applicationService.updateState(obj.id, value)    
-    .subscribe((res: Application) => {
-      this.uiService.stopLoader();      
-      this.refreshData();
-    }, () => {
-      this.uiService.stopLoader();
-      this.refreshData()
-    });
+  toggleApplicationState(value: any, obj: Application) {         
+    let handler = () => { this.uiService.stopLoader(); this.refreshData(); };
+    this.uiService.startLoader('Updating application state. Please wait...');    
+    this.applicationService.updateState(obj.id, value).subscribe((res: Application) => handler() , () => handler());
   }  
 
   filterByKey(key: string, value: number){
     let index: number = this._requestParameters.findIndex((s) => s.startsWith(key + '='));
-    if(index > -1){
-      this._requestParameters[index] = key + "=" + value;
-    }else{
-      this._requestParameters.push(key + "=" + value);
-    }
+    (index > -1) ? (this._requestParameters[index] = `${key}=${value}`) : (this._requestParameters.push(`${key}=${value}`));    
     this.refreshData();
-  }  
-
-  get isFilterByState(){ return (this._requestParameters.findIndex((s) => s.startsWith('enabled=') && (+(s.split("=")[1]) > -1)) > -1);}
-  get isFilterByPlatform(){ return (this._requestParameters.findIndex((s) => s.startsWith('os=') && (+(s.split("=")[1]) > -1)) > -1);}
+  }    
 }

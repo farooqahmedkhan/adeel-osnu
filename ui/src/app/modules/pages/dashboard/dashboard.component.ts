@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormArray, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DashboardFormGroupMockup, IOSMandatoryFormGroups, AndroidMandatoryFormGroups } from 'src/app/modules/core/mockups/dashboard.ui.formgroup.mockup';
+import { DashboardFormGroupMockup, IOSMandatoryFormGroups, AndroidMandatoryFormGroups } from '../../core/mockups/formgroup.mockups';
 import { Template } from 'src/app/modules/core/models/template.model';
 import { Application } from 'src/app/modules/core/models/application.model';
 import { TemplateService } from 'src/app/modules/pages/templates/template.service';
@@ -43,9 +43,8 @@ export class DashboardComponent implements OnInit {
   }
 
   loadTemplate(){    
-    this.uiService.startLoader();
-    this.uiService.updateLoader('Loading template. Please wait...');
-    this.templateService.getTemplate(this.templateFormGroup.get('selectedTemplate').value)
+    this.uiService.startLoader('Loading template. Please wait...');
+    this.templateService.getTemplate(this.selectedTemplate.value)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);           
 
@@ -53,12 +52,12 @@ export class DashboardComponent implements OnInit {
 
       this.templateFormGroup.patchValue({
         os: res.os,
-        name: this.template.name,
-        message: this.template.message,
-        // launch_url: this.template.launch_url,
-        additional_fields: this.template.additional_fields,
+        name: this.template.name || "",
+        message: this.template.message || "",        
+        additional_fields: this.template.additional_fields || [],
         big_picture: this.template.big_picture || ""
       });      
+      
       this.uiService.stopLoader();
     });
   }
@@ -68,12 +67,13 @@ export class DashboardComponent implements OnInit {
 
   get additionalValues(){ return <FormArray>this.templateFormGroup.get('additional_fields');}
   get receiverCheckboxControls(){ return <FormArray>this.templateFormGroup.get('receiver_apps');}
+  get selectedTemplate(){ return this.templateFormGroup.get('selectedTemplate');}
 
   submit(){       
     this.uiService.startLoader();    
 
     let data:any = this.templateFormGroup.value;                    
-    let pObj = { sender: data.owner_app, receiver: this.receiverApps, name: data.name, message: data.message, os: data.os, additional_fields: {}};
+    let pObj = { sender: data.owner_app, receiver: this.receiverApps, name: data.name, message: data.message, os: data.os, additional_fields: {}, big_picture: data.big_picture};
     Array.from(data.additional_fields).map((v: any, i, s) => pObj.additional_fields[v.key] = v.value);
     
     if(this.saveAsTemplate){

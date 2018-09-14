@@ -3,7 +3,7 @@ import { Template } from '../../../core/models/template.model';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TemplateService } from '../../../pages/templates/template.service';
-import { TemplateEditFormGroupMockup } from '../../../core/mockups/dashboard.ui.formgroup.mockup';
+import { TemplateEditFormGroupMockup } from '../../../core/mockups/formgroup.mockups';
 import { UiService } from '../../../core/services/ui.service';
 
 @Component({
