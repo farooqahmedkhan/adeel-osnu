@@ -24,7 +24,7 @@ export class UiService {
 
   showModal(content: any, callback: Function){
     this.uiModalRef = this.modalService.open(content, { centered: true, backdrop: 'static', size: 'lg', keyboard: false});
-    this.uiModalRef.result.then((r: string) => {}, (r: string) => callback());
+    // this.uiModalRef.result.then((r: string) => {}, (r: string) => callback());
     return this.uiModalRef;
   }
 }

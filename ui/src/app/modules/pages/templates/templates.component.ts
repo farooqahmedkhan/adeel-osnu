@@ -21,10 +21,14 @@ export class TemplatesComponent implements OnInit {
 
   ngOnInit() { this.refreshData() }
 
-  openTemplateCreateModal(){ this.modal = this.uiService.showModal(TemplateDetailModalComponent, this.refreshData);}
+  openTemplateCreateModal(){ 
+    this.modal = this.uiService.showModal(TemplateDetailModalComponent, this.refreshData);
+    this.modal.result.then(() => {}, () => this.refreshData());
+  }
   openTemplateEditModal(template: Template){
     this.modal = this.uiService.showModal(TemplateEditModalComponent, this.refreshData);    
     (<TemplateEditModalComponent>this.modal.componentInstance)._templateId = template.id;    
+    this.modal.result.then(() => {}, () => this.refreshData());
   }
 
   refreshData(params: string[] = this._requestParameters){ this.templates = this.templateService.getTemplates(params);}

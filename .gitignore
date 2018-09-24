@@ -14,5 +14,4 @@ yarn-error.log
 .env
 /api/node_modules
 /api/vendor
-/ui/dist
 /ui/node_modules

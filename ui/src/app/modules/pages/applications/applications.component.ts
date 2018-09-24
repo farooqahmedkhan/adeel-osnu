@@ -32,10 +32,14 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   /**
    * View Events
    */
-  openApplicationCreateModal() { this.modal = this.uiService.showModal(ApplicationDetailModalComponent, this.refreshData); }
+  openApplicationCreateModal() { 
+    this.modal = this.uiService.showModal(ApplicationDetailModalComponent, this.refreshData);
+    this.modal.result.then(() => {}, () => this.refreshData());
+  }
   openApplicationEditModal(application: Application) {
     this.modal = this.uiService.showModal(ApplicationEditModalComponent, this.refreshData);
     (<ApplicationEditModalComponent>this.modal.componentInstance)._applicationId = application.id;    
+    this.modal.result.then(() => {}, () => this.refreshData());
   }
 
   refreshData(params: string[] = this._requestParameters) { this.applications = this.applicationService.getApplications(params); }
