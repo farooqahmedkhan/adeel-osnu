@@ -11,4 +11,4 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard'}
 ];
 
-export const RoutingModule: ModuleWithProviders = RouterModule.forRoot(routes);
+export const RoutingModule: ModuleWithProviders = RouterModule.forRoot(routes, { useHash: true});

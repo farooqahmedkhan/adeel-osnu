@@ -1,4 +1,4 @@
-ngx-ui-switch@7.0.0
+ngx-ui-switch@7.0.1
 MIT
 MIT
 
