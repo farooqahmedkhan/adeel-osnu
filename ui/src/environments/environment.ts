@@ -10,7 +10,9 @@ export const environment = {
       APPS: '/applications/',      
       TEMPLATES: '/templates/'
     }
-  }
+  },
+  LOGIN_COOKIE: 'logged_user',
+  AFTER_LOGIN_ROUTE: 'dashboard'
 };
 
 /*

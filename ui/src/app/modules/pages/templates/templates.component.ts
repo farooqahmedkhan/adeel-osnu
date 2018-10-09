@@ -19,7 +19,9 @@ export class TemplatesComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private templateService: TemplateService, private uiService: UiService) { }
 
-  ngOnInit() { this.refreshData() }
+  ngOnInit() {     
+    this.refreshData();
+  }
 
   openTemplateCreateModal(){ 
     this.modal = this.uiService.showModal(TemplateDetailModalComponent, this.refreshData);

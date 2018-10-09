@@ -20,7 +20,8 @@ export class TemplateEditModalComponent implements OnInit {
 
   }
 
-  ngOnInit() {        
+  ngOnInit() {  
+    this.templateFormGroup.reset();      
     this.uiService.startLoader();
     this.uiService.updateLoader('Loading template details. Please wait...');
     this.templateService.getTemplate(this._templateId)

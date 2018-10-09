@@ -21,6 +21,7 @@ export class TemplateDetailModalComponent implements OnInit {
   }
 
   ngOnInit() {    
+    this.templateFormGroup.reset();
   }
 
   addNewAdditionalFieldRow(){

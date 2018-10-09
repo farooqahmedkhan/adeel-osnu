@@ -20,6 +20,7 @@ export class ApplicationEditModalComponent implements OnInit {
   constructor(public activeModal: NgbModal, private applicationService: ApplicationService, private uiService: UiService) { }
 
   ngOnInit() {    
+    this.applicationFormGroup.reset();
     this.uiService.startLoader('Loading application details. Please wait...');    
     this.applicationService.getApplication(this._applicationId)
       .subscribe((_res: Application) => { 

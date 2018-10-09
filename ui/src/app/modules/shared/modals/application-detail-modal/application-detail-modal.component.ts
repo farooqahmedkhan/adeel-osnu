@@ -20,6 +20,7 @@ export class ApplicationDetailModalComponent implements OnInit, OnDestroy {
    * Lifecycle Events
    */
   ngOnInit() {     
+    this.applicationFormGroup.reset();
   }
   
   ngOnDestroy(): void { this.activeModal.dismissAll('close')}    

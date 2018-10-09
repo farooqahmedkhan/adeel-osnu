@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit {
   private _modalRef: NgbModalRef;
   public templateFormGroup = DashboardFormGroupMockup;
   public saveAsTemplate: boolean = false;
+  private requestParameters: string[] = ["enabled=1"];
 
   constructor(
     private applicationService: ApplicationService, 
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
     this.uiService.startLoader('Loading template. Please wait...');
     this.templateService.getTemplate(this.selectedTemplate.value)
     .subscribe((res: any) => {
-      this.template = <Template> JSON.parse(res.json);           
+      this.template = <Template> JSON.parse(res.json);                 
 
       this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());
 
@@ -58,6 +59,10 @@ export class DashboardComponent implements OnInit {
         big_picture: this.template.big_picture || ""
       });      
       
+      // refresh app data as well on sidebar      
+      this.requestParameters.push("os=" + res.os);
+      this.refreshData(this.requestParameters);
+
       this.uiService.stopLoader();
     });
   }
@@ -122,8 +127,8 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  refreshData(){
-    this.receiverAppDataset = this.ownerAppDataset = this.applicationService.getApplications(["enabled=1"]);    
+  refreshData(params: string[] = []){
+    this.receiverAppDataset = this.ownerAppDataset = this.applicationService.getApplications(params);    
     this.receiverAppDataset.subscribe((value: Application[]) => {            
       this.receiverApplications = value;
       value.forEach((i: Application) => this.receiverCheckboxControls.push(new FormControl(false)));
