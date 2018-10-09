@@ -17,16 +17,21 @@ export class TemplateEditModalComponent implements OnInit {
   public templateFormGroup = TemplateEditFormGroupMockup;
 
   constructor(public activeModal: NgbModal, private templateService: TemplateService, private uiService: UiService) { 
-
+    this.templateFormGroup = new FormGroup({
+      name: new FormControl('', Validators.required),
+      os: new FormControl('1', Validators.required),
+      message: new FormControl('', Validators.required),
+      additional_fields: new FormArray([]),
+      big_picture: new FormControl('')
+    });
   }
 
-  ngOnInit() {  
-    this.templateFormGroup.reset();      
-    this.uiService.startLoader();
-    this.uiService.updateLoader('Loading template details. Please wait...');
+  ngOnInit() {      
+    console.log(TemplateEditFormGroupMockup);
+    this.uiService.startLoader();    
     this.templateService.getTemplate(this._templateId)
     .subscribe((res: any) => {
-      this.template = <Template> JSON.parse(res.json);            
+      this.template = <Template> JSON.parse(res.json);                        
       this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());      
 
       this.templateFormGroup.setValue({
@@ -36,6 +41,7 @@ export class TemplateEditModalComponent implements OnInit {
         additional_fields: this.template.additional_fields,
         big_picture: this.template.big_picture || ""
       });      
+      
       this.uiService.stopLoader();
     });    
   }
