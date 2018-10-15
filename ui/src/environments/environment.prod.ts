@@ -6,7 +6,7 @@
 export const environment = {
   production: true,
   API: {
-    BASE_URL: 'http://18.188.169.213:8000/api',
+    BASE_URL: 'http://18.188.169.213/api',
     ROUTES: {
       APPS: '/applications/',      
       TEMPLATES: '/templates/'
