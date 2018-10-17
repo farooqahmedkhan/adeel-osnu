@@ -43,12 +43,17 @@ export class DashboardComponent implements OnInit {
     this.refreshData(['enabled=1', 'os=1']);
   }
 
-  loadTemplate(){    
+  loadTemplate(){            
     this.uiService.startLoader('Loading template. Please wait...');
     this.templateService.getTemplate(this.selectedTemplate.value)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);                 
-
+      
+      // this.templateFormGroup.setValue({ additional_fields: []});
+      
+      this.templateFormGroup.removeControl('additional_fields');
+      this.templateFormGroup.addControl('additional_fields', new FormArray([]));
+      
       this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());
 
       this.templateFormGroup.patchValue({
