@@ -16,6 +16,7 @@ class SendNotification implements ShouldQueue
     protected $_receiver = "";
     protected $_data = [];
     protected $_big_picture = "";
+    // protected $_delivery = "";
     /**
      * Create a new job instance.
      *
@@ -26,7 +27,7 @@ class SendNotification implements ShouldQueue
         $this->_message = $message;
         $this->_receiver = $receiver;
         $this->_data = $data;
-        $this->_big_picture = $big_picture;
+        $this->_big_picture = $big_picture;        
     }
 
     /**

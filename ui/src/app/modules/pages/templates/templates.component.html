@@ -28,11 +28,20 @@
               <tbody>
                 <tr *ngFor="let template of templates | async;let i = index;">
                   <td>{{ i + 1 }}</td>
-                  <td>{{ template.name }}</td>
+                  <td>
+                    <h1 class="mb-1 p-0">{{ template.title }}</h1>
+                    <h2 class="m-0 p-0">{{ template.title }}</h2>
+                  </td>
                   <td class="text-center">{{ template.platform_name }}</td>                  
                   <td>
+                    <!-- Edit Template -->
                     <a href="javascript:void" (click)="openTemplateEditModal(template)">
-                        <span ngbTooltip="Edit this record" placement="top"><i class="fa fa-pencil"></i></span>
+                        <span ngbTooltip="Edit this template" placement="top"><i class="fa fa-pencil"></i></span>                        
+                    </a>
+
+                    <!-- Remove Template -->
+                    <a href="javascript:void" (click)="removeTemplate($event, template)">                      
+                      <span ngbTooltip="Delete this template" placement="top"><i class="fa fa-trash"></i></span>
                     </a>
                   </td>
                 </tr>              

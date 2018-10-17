@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() { 
     this.templateFormGroup.patchValue({os: 1});
-    this.refreshData();
+    this.refreshData(['os=1']);
   }
 
   loadTemplate(){    
@@ -78,7 +78,16 @@ export class DashboardComponent implements OnInit {
     this.uiService.startLoader();    
 
     let data:any = this.templateFormGroup.value;                    
-    let pObj = { sender: data.owner_app, receiver: this.receiverApps, name: data.name, message: data.message, os: data.os, additional_fields: {}, big_picture: data.big_picture};
+    let pObj = { 
+      sender: data.owner_app, 
+      receiver: this.receiverApps, 
+      name: data.name, 
+      message: data.message, 
+      os: data.os, 
+      additional_fields: {}, 
+      big_picture: data.big_picture,    
+      delievery: data.notification_delivery
+    };
     Array.from(data.additional_fields).map((v: any, i, s) => pObj.additional_fields[v.key] = v.value);
     
     if(this.saveAsTemplate){
@@ -167,7 +176,10 @@ export class DashboardComponent implements OnInit {
       if(index == -1){
         this.additionalValues.controls.unshift(it);
       }      
-    });        
+    });      
+    
+    let os = this.templateFormGroup.get('os').value;
+    this.refreshData([('os=' + os)]);
   }
 
 }

@@ -40,4 +40,14 @@ export class TemplatesComponent implements OnInit {
     (index > -1) ? (this._requestParameters[index] = `${key}=${value}`) : (this._requestParameters.push(`${key}=${value}`));    
     this.refreshData();
   }
+
+  removeTemplate(e: any, template: Template){
+    if(confirm('Do you confirm, remove this template?')){
+      this.uiService.startLoader('Removing Template. Please wait...');
+      this.templateService.removeTemplate(template.id).subscribe((r: any) => {                
+        this.uiService.stopLoader();
+        this.refreshData();
+      });
+    }
+  }  
 }

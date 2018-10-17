@@ -48,13 +48,22 @@
                     template.name }}</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label for="exampleFormControlSelect1">Platform</label>
-                <select class="form-control" formControlName="os" (change)="adjustAdditionalData($event)">
-                  <option value="0">IOS</option>
-                  <option value="1">Android</option>
-                </select>
-              </div>
+              <div class="form-row">
+                  <div class="form-group col-6">
+                    <label for="exampleFormControlSelect1">Platform</label>
+                    <select class="form-control" formControlName="os" (change)="adjustAdditionalData($event)">
+                      <option value="0">IOS</option>
+                      <option value="1">Android</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-6">
+                    <label for="exampleFormControlSelect2">Notification Delivery</label>
+                    <select class="form-control" formControlName="notification_delivery">
+                      <option value="">Immidiate</option>
+                      <option value="last-active">Intelligent</option>
+                    </select>
+                  </div>
+              </div>              
               <div class="form-group">
                 <label for="exampleFormControlInput1">Title</label>
                 <input type="email" class="form-control" formControlName="name">

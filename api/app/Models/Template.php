@@ -9,6 +9,7 @@ class Template extends Model
     protected $table_name = "templates";
 
     protected $fillable = array(
+        'title',
         'name',
         'json',
         'os'        
@@ -16,6 +17,7 @@ class Template extends Model
 
     protected $visible = array(
         'id',
+        'title',
         'name',
         'platform_name'
     );

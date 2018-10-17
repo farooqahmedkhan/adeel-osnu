@@ -5,3 +5,10 @@
 .panel-heading {
     padding: 2%;
 }
+
+td:last-child a {
+    padding: 2% 2%;
+}
+
+td h1 { font-size: 15px;}
+td h2 { font-size: 9px;}

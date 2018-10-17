@@ -26,4 +26,8 @@ export class TemplateService {
   getTemplate(identifier: Number): Observable<Template>{
     return this.httpClient.get<Template>(environment.API.BASE_URL + environment.API.ROUTES.TEMPLATES + identifier);
   }
+
+  removeTemplate(identifier: Number): Observable<any> {
+    return this.httpClient.delete<any>(environment.API.BASE_URL + environment.API.ROUTES.TEMPLATES + identifier);
+  }
 }

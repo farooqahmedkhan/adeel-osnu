@@ -4,6 +4,7 @@ import { CustomFormGroup } from "src/app/modules/core/custom_controls/CustomForm
 export const DashboardFormGroupMockup: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
     os: new FormControl('1', Validators.required),
+    notification_delivery: new FormControl('', Validators.required),
     message: new FormControl('', Validators.required),
     additional_fields: new FormArray([
         new CustomFormGroup({ key: new FormControl('app-name'), value: new FormControl('')}, null, null, true)
@@ -16,6 +17,7 @@ export const DashboardFormGroupMockup: FormGroup = new FormGroup({
 });
 
 export const TemplateDetailFormGroupMockup: FormGroup = new FormGroup({
+    title: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     os: new FormControl('1', Validators.required),
     message: new FormControl('', Validators.required),
@@ -27,6 +29,7 @@ export const TemplateDetailFormGroupMockup: FormGroup = new FormGroup({
 });
 
 export const TemplateEditFormGroupMockup: FormGroup = new FormGroup({
+    title: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     os: new FormControl('1', Validators.required),
     message: new FormControl('', Validators.required),

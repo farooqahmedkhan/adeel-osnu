@@ -40,6 +40,7 @@ class TemplateController extends BaseController
     {
         $response = null;
         $validator = Validator::make($request->all(), [
+            'title' => 'required',
             'name' => 'required',
             'message' => 'required',
             'os' => 'required'            
@@ -48,6 +49,7 @@ class TemplateController extends BaseController
         if(!$validator->fails()){
             $params = $request->all();
             $tempObject = array(
+                "title" => $params['title'],
                 "name" => $params['name'],
                 "os" => $params['os'],
                 "json" => json_encode(array(
@@ -82,6 +84,7 @@ class TemplateController extends BaseController
             $template = \App\Models\Template::find($id);       
             $data = array(
                 'id' => $template->id,
+                'title' => $template->title,
                 'name' => $template->name,
                 'json' => $template->json,
                 'os' => $template->os
@@ -119,6 +122,7 @@ class TemplateController extends BaseController
 
         $validator = Validator::make($params, [
             'id' => 'required|exists:templates',
+            'title' => 'required',
             'name' => 'required',
             'message' => 'required',
             'os' => 'required'
@@ -127,6 +131,7 @@ class TemplateController extends BaseController
         if(!$validator->fails()){
             $params = $request->all();
             $tempObject = array(
+                "title" => $params['title'],
                 "name" => $params['name'],
                 "os" => $params['os'],
                 "json" => json_encode(array(
@@ -142,6 +147,7 @@ class TemplateController extends BaseController
             $status = $template->update($tempObject);
             $data = array(
                 'id' => $template->id,
+                'title' => $template->title,
                 'name' => $template->name,
                 'json' => $template->json,
                 'os' => $template->os
@@ -165,9 +171,8 @@ class TemplateController extends BaseController
             'id' => 'exists:templates'
         ]);
         if(!$validator->fails()){
-            $template = \App\Models\Template::find($id);
-            $template->destroy();
-            return $this->makeJSONResponse(true, 'Template deleted successfully', [], []);
+            $result = \App\Models\Template::destroy($id);            
+            return $this->makeJSONResponse(true, 'Template deleted successfully', [$result], []);
         }else{
             return $this->makeJSONResponse(false, 'Invalid request', [], []);
         }

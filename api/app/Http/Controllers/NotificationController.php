@@ -91,15 +91,22 @@ class NotificationController extends BaseController
             'message' => 'required',
             'os' => 'required',
             'sender' => 'required',
-            'receiver' => 'required',                        
+            'receiver' => 'required'            
         ]);
 
         if(!$validator->fails()){
             $data = '';
             $params = $request->all();            
-            $apps = \App\Models\App::findMany($params['receiver']);            
-            foreach($apps as $app){
-                \App\Jobs\SendNotification::dispatch($app->id, $params['message'], $params['additional_fields'])->delay(now()->addSeconds(10));
+            $apps = \App\Models\App::findMany($params['receiver']);  
+
+            if(!empty($params['delivery'])){
+                // only add this parameter when selected intelligent
+                if($params['delivery'] == "last-active"){
+                    $params['additional_fields']['delivery'] = $params['delivery'];
+                }
+            }
+            foreach($apps as $app){                
+                \App\Jobs\SendNotification::dispatch($app->id, $params['message'], $params['additional_fields'] ?? [])->delay(now()->addSeconds(10));
             }
             $response = $this->makeJSONResponse(true, '', $params, []);
         }else{
