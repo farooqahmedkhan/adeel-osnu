@@ -39,8 +39,8 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
-    this.templateFormGroup.patchValue({os: 1});
-    this.refreshData(['os=1']);
+    this.templateFormGroup.patchValue({os: 1});    
+    this.refreshData(['enabled=1', 'os=1']);
   }
 
   loadTemplate(){    
@@ -59,9 +59,10 @@ export class DashboardComponent implements OnInit {
         big_picture: this.template.big_picture || ""
       });      
       
-      // refresh app data as well on sidebar      
-      this.requestParameters.push("os=" + res.os);
-      this.refreshData(this.requestParameters);
+      // // refresh app data as well on sidebar      
+      // this.requestParameters.push("os=" + res.os);
+      // this.refreshData(this.requestParameters);
+      this.refreshData(['enabled=1', 'os=' + res.os]);
 
       this.uiService.stopLoader();
     });
@@ -179,7 +180,7 @@ export class DashboardComponent implements OnInit {
     });      
     
     let os = this.templateFormGroup.get('os').value;
-    this.refreshData([('os=' + os)]);
+    this.refreshData(['enabled=1', 'os=' + os]);
   }
 
 }
