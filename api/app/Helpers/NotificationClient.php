@@ -8,12 +8,13 @@ class NotificationClient extends OneSignalClient {
 
     public function send_notification_extended($title, $message, $url = null, $data = null, $buttons = null, $schedule = null) {
         
-        $headings = array( "en" => $title);
-        $contents = array("en" => $message);
+        $headings = array( "en" => $title );
+        $contents = array( "en" => $message );
 
         $params = array(
             'app_id' => $this->appId,
             'headings' => $headings,
+            'sub_title' => $headings,
             'contents' => $contents,
             'included_segments' => array('All')
         );
