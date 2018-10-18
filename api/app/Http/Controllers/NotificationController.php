@@ -105,8 +105,17 @@ class NotificationController extends BaseController
                     $params['additional_fields']['delivery'] = $params['delivery'];
                 }
             }
+
+            // added template mentioned title to body
+            // $params['additional_fields']['title'] = $params['name'];
+
             foreach($apps as $app){                
-                \App\Jobs\SendNotification::dispatch($app->id, $params['message'], $params['additional_fields'] ?? [])->delay(now()->addSeconds(10));
+                \App\Jobs\SendNotification::dispatch(
+                    $app->id, 
+                    $params['name'], 
+                    $params['message'], 
+                    $params['additional_fields'] ?? []
+                )->delay(now()->addSeconds(10));
             }
             $response = $this->makeJSONResponse(true, '', $params, []);
         }else{

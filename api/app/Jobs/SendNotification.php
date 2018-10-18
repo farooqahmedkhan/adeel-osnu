@@ -12,9 +12,10 @@ class SendNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $_data = [];
+    protected $_title = "";
     protected $_message = "";
     protected $_receiver = "";
-    protected $_data = [];
     protected $_big_picture = "";
     // protected $_delivery = "";
     /**
@@ -22,8 +23,9 @@ class SendNotification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($receiver, $message, $data, $big_picture = "")
+    public function __construct($receiver, $title, $message, $data, $big_picture = "")
     {
+        $this->_title = $title;
         $this->_message = $message;
         $this->_receiver = $receiver;
         $this->_data = $data;
@@ -40,16 +42,7 @@ class SendNotification implements ShouldQueue
         $app = \App\Models\App::find($this->_receiver);
         if(!empty($app)){
             $client = $app->getOneSignalClient();
-            $response = $client->sendNotificationToAll($this->_message, null, $this->_data, null, null);
-            // $response = $client->sendNotificationCustom([
-            //     'app_id' => $app->one_signal_key,
-            //     'api_key' => $app->one_signal_rest_api_key,
-            //     'data' => $this->_data,
-            //     'content' => array(
-            //         'en' => $this->_message
-            //     ),
-            //     'big_picture' => $this->_big_picture
-            // ]);            
+            $response = $client->send_notification_extended($this->_title, $this->_message, null, $this->_data, null, null);                    
         }        
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Berkayk\OneSignal\OneSignalClient;
+// use Berkayk\OneSignal\OneSignalClient;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\NotificationClient;
 
 class App extends Model
 {
@@ -32,7 +33,7 @@ class App extends Model
     }
 
     public function getOneSignalClient(){
-        $client = new OneSignalClient($this->one_signal_key, $this->one_signal_rest_api_key, $this->one_signal_user_auth_key);
+        $client = new NotificationClient($this->one_signal_key, $this->one_signal_rest_api_key, $this->one_signal_user_auth_key);
         return $client;
     }
 
