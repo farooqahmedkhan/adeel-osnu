@@ -112,8 +112,8 @@ class NotificationController extends BaseController
             foreach($apps as $app){                
                 \App\Jobs\SendNotification::dispatch(
                     $app->id, 
-                    $params['name'], 
-                    $params['message'], 
+                    $params['name'] ?? "", 
+                    $params['message'] ?? "", 
                     $params['additional_fields'] ?? []
                 )->delay(now()->addSeconds(10));
             }
