@@ -8,8 +8,7 @@ export const DashboardFormGroupMockup: FormGroup = new FormGroup({
     message: new FormControl('', Validators.required),
     additional_fields: new FormArray([
         new CustomFormGroup({ key: new FormControl('app-name'), value: new FormControl('')}, null, null, true)
-    ]),
-    // launch_url: new FormControl('', Validators.required),
+    ]),    
     owner_app: new FormControl('', Validators.required),
     receiver_apps: new FormArray([], []),
     selectedTemplate: new FormControl('-1', []),
@@ -50,7 +49,7 @@ export const IOSMandatoryFormGroups = [
 
 export const AndroidMandatoryFormGroups = [    
     new CustomFormGroup({ key: new FormControl('app-name'), value: new FormControl('')}, null, null, true)
-];
+];  
 
 export const ApplicationDetailFormGroupMockup = new FormGroup({
     name: new FormControl('', Validators.required),

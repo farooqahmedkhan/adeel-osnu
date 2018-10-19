@@ -43,8 +43,9 @@ export class DashboardComponent implements OnInit {
     this.refreshData(['enabled=1', 'os=1']);
   }
 
-  loadTemplate(){            
-    this.uiService.startLoader('Loading template. Please wait...');
+  loadTemplate(){ 
+    if(this.selectedTemplate.value != -1){
+      this.uiService.startLoader('Loading template. Please wait...');
     this.templateService.getTemplate(this.selectedTemplate.value)
     .subscribe((res: any) => {
       this.template = <Template> JSON.parse(res.json);                 
@@ -57,7 +58,8 @@ export class DashboardComponent implements OnInit {
       this.template.additional_fields.forEach((i) => this.addNewAdditionalFieldRow());
 
       this.templateFormGroup.patchValue({
-        os: res.os,
+        // do not override the os :: it is already selected by user
+        // os: res.os, 
         name: this.template.name || "",
         message: this.template.message || "",        
         additional_fields: this.template.additional_fields || [],
@@ -71,6 +73,7 @@ export class DashboardComponent implements OnInit {
 
       this.uiService.stopLoader();
     });
+    }               
   }
 
   addNewAdditionalFieldRow(){ this.additionalValues.push(new CustomFormGroup({ key: new FormControl(), value: new FormControl() }));}
@@ -151,7 +154,8 @@ export class DashboardComponent implements OnInit {
         (this.receiverCheckboxControls.controls[0] as FormControl).setValue(true);
       }      
     });    
-    this.existingTemplates = this.templateService.getTemplates();
+    console.log('Loading templates =>', params);
+    this.existingTemplates = this.templateService.getTemplates(params);    
   }
 
   private get receiverApps() {
