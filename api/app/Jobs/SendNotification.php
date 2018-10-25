@@ -15,7 +15,7 @@ class SendNotification implements ShouldQueue
     protected $_data = [];
     // protected $_title = "";
     // protected $_message = "";
-    // protected $_receiver = "";
+    protected $_receiver = "";
     // protected $_big_picture = "";
     // protected $_delivery = "";
     /**
