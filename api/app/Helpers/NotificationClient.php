@@ -35,6 +35,10 @@ class NotificationClient extends OneSignalClient {
             $params['send_after'] = $schedule;
         }
 
+        if(isset($data['big_picture'])){
+            $params['big_picture'] = $data['big_picture'];
+        }
+
         $this->sendNotificationCustom($params);
     }
 }

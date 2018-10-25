@@ -109,6 +109,11 @@ class NotificationController extends BaseController
             // added template mentioned title to body
             // $params['additional_fields']['title'] = $params['name'];
 
+            // check for big picture
+            if(!empty($params['big_picture'])){
+                $params['additional_fields']['big_picture'] = $params['big_picture'];
+            }
+
             foreach($apps as $app){                
                 \App\Jobs\SendNotification::dispatch(
                     $app->id, 
