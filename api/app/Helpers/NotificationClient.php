@@ -10,7 +10,7 @@ class NotificationClient extends OneSignalClient {
 
         $params = array(
             'app_id' => $this->appId,
-            'headings' => array("en" => $input['title']),            
+            'headings' => array("en" => $input['name']),            
             'contents' => array("en" => $input['message']),
             'included_segments' => array('All')
         );
