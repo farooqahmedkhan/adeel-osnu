@@ -6,16 +6,12 @@ use Berkayk\OneSignal\OneSignalClient;
 
 class NotificationClient extends OneSignalClient {
 
-    public function send_notification_extended($title, $message, $url = null, $data = null, $buttons = null, $schedule = null) {
-        
-        $headings = array( "en" => $title );
-        $contents = array( "en" => $message );
+    public function send_notification_extended($title, $message, $url = null, $data = null, $buttons = null, $schedule = null) {                
 
         $params = array(
             'app_id' => $this->appId,
-            'headings' => $headings,
-            'sub_title' => $headings,
-            'contents' => $contents,
+            'headings' => array("en" => $title),            
+            'contents' => array("en" => $message),
             'included_segments' => array('All')
         );
 
