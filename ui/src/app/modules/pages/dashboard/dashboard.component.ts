@@ -154,7 +154,7 @@ export class DashboardComponent implements OnInit {
         (this.receiverCheckboxControls.controls[0] as FormControl).setValue(true);
       }      
     });    
-    console.log('Loading templates =>', params);
+    // console.log('Loading templates =>', params);
     this.existingTemplates = this.templateService.getTemplates(params);    
   }
 

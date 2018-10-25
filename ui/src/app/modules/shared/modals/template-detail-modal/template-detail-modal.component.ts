@@ -21,7 +21,17 @@ export class TemplateDetailModalComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.templateFormGroup.reset();
+    this.templateFormGroup = new FormGroup({
+        title: new FormControl('', Validators.required),
+        name: new FormControl('', Validators.required),
+        os: new FormControl('1', Validators.required),
+        message: new FormControl('', Validators.required),
+        additional_fields: new FormArray([
+            new CustomFormGroup({ key: new FormControl('app-name'), value: new FormControl('')}, null, null, true)
+        ]),
+        // launch_url: new FormControl('', Validators.required)
+        big_picture: new FormControl('')
+    });
   }
 
   addNewAdditionalFieldRow(){
