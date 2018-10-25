@@ -37,6 +37,7 @@ class NotificationClient extends OneSignalClient {
 
         if(isset($data['big_picture'])){
             $params['big_picture'] = $data['big_picture'];
+            unset($data['big_picture']);
         }
 
         $this->sendNotificationCustom($params);
