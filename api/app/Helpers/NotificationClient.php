@@ -6,36 +6,32 @@ use Berkayk\OneSignal\OneSignalClient;
 
 class NotificationClient extends OneSignalClient {
 
-    public function send_notification_extended($title, $message, $url = null, $data = null, $buttons = null, $schedule = null) {                
+    public function send_notification_extended($input) {
 
         $params = array(
             'app_id' => $this->appId,
-            'headings' => array("en" => $title),            
-            'contents' => array("en" => $message),
+            'headings' => array("en" => $input['title']),            
+            'contents' => array("en" => $input['message']),
             'included_segments' => array('All')
         );
 
-        if(isset($data['big_picture'])){
-            $params['big_picture'] = $data['big_picture'];
-            unset($data['big_picture']);            
+        if(isset($input['big_picture'])){
+            $params['big_picture'] = $input['big_picture'];            
         }
 
-        if (isset($url)) {
-            $params['url'] = $url;
+        if (isset($input['url'])) {
+            $params['url'] = $input['url'];
         }
 
-        if (isset($data)) {
-            $params['data'] = $data;
-        }
+        if (isset($input['additional_fields'])) {
+            $params['data'] = $input['additional_fields'];
+        }        
 
-        if (isset($buttons)) {
-            $params['buttons'] = $buttons;
+        if(isset($input['delivery'])){
+            if($input['delivery'] == "last-active"){
+                $params['delayed_option'] = $input['delivery'];
+            }
         }
-
-        if(isset($schedule)){
-            $params['send_after'] = $schedule;
-        }
-
 
         $this->sendNotificationCustom($params);
     }
