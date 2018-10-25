@@ -19,6 +19,11 @@ class NotificationClient extends OneSignalClient {
             'included_segments' => array('All')
         );
 
+        if(isset($data['big_picture'])){
+            $params['big_picture'] = $data['big_picture'];
+            unset($data['big_picture']);            
+        }
+
         if (isset($url)) {
             $params['url'] = $url;
         }
@@ -35,10 +40,6 @@ class NotificationClient extends OneSignalClient {
             $params['send_after'] = $schedule;
         }
 
-        if(isset($data['big_picture'])){
-            $params['big_picture'] = $data['big_picture'];
-            unset($data['big_picture']);
-        }
 
         $this->sendNotificationCustom($params);
     }
