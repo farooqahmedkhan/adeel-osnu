@@ -25,15 +25,15 @@ class NotificationClient extends OneSignalClient {
 
         if (isset($input['additional_fields'])) {
             $params['data'] = $input['additional_fields'];
+        }             
+
+        if(isset($input['delievery'])){
+            if($input['delievery'] == "last-active"){
+                $params['delayed_option'] = $input['delievery'];
+            }
         }        
 
-        if(isset($input['delivery'])){
-            if($input['delivery'] == "last-active"){
-                $params['delayed_option'] = $input['delivery'];
-            }
-        }
-
-        $this->sendNotificationCustom($params);
+        return $this->sendNotificationCustom($params);
     }
 }
 

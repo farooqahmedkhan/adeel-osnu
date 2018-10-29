@@ -42,9 +42,8 @@ class SendNotification implements ShouldQueue
     {
         $app = \App\Models\App::find($this->_receiver);
         if(!empty($app)){
-            $client = $app->getOneSignalClient();
-            // $response = $client->send_notification_extended($this->_title, $this->_message, null, $this->_data, null, null);                    
-            $response = $client->send_notification_extended($this->_data);                    
+            $client = $app->getOneSignalClient();            
+            $response = $client->send_notification_extended($this->_data);                 
         }        
     }
 }
