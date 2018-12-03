@@ -31,8 +31,7 @@ class NotificationClient extends OneSignalClient {
             if($input['delievery'] == "last-active"){
                 $params['delayed_option'] = $input['delievery'];
             }
-        }        
-
+        }                
         return $this->sendNotificationCustom($params);
     }
 }
